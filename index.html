@@ -99,28 +99,23 @@
             height: 50px; /* 세로 길이 */
             background-color: white; /* 배경색 */
             border: 2px solid black; /* 검은색 테두리 */
-            font-size: 1.5rem;
-	      text-align: center;
-	      line-height: 45px;
-	      color: darkgreen;
-	      display: flex; /* 텍스트를 수평 중앙에 배치 */
+            display: flex;
             justify-content: center;
             align-items: center;
+            font-size: 1.5rem;
         }
-        .text-animation {
-            /* 텍스트 애니메이션 */
-            animation: scaleAnimation 1s infinite alternate;
-        }
-        @keyframes scaleAnimation {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1); /* 1.3배 커짐 */
-            }
-            100% {
-                transform: scale(1); /* 다시 원래 크기로 돌아옴 */
-            }
+        .input-name{
+            font-family: HMFBRG;
+        font-size: 1.5rem;
+            text-align: center;
+            line-height: 45px;
+            color: darkgreen;
+            width: 100%; /* 입력 필드의 가로 길이가 rect2와 같게 만듬 */
+            height: 100%; /* 입력 필드의 세로 길이가 rect2와 같게 만듬 */
+            border: none; /* 기본 테두리 제거 */
+            outline: none; /* 포커스 시 테두리 강조 제거 */
+            text-align: center;
+            background-color: transparent;
         }
 
         .text-container {
@@ -152,16 +147,41 @@
 	<div id="Ltitle">틀린 어휘 찾기</div>
 	<div class="rectangle-container">
         <div class="rectangle1">성명</div>
-        <div class="rectangle2" onclick="askName()"><span class="text-animation">이곳을 클릭!</span></div>
+        <div class="rectangle2" onclick="makeEditable()"></div>
+    </div>
 
         <script type="text/javascript">
-        	function askName() {
-            var name = prompt("이름을 적어주세요.");
-            if (name != null && name != "") {
-                // 이름을 입력하면 다음 페이지로 이동
+        	function makeEditable() {
+            var rect2 = document.querySelector('.rectangle2');
+            var input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'input-name';
+            input.placeholder = '';
+            input.onkeydown = function(event) {
+                if (event.key === 'Enter') {
+                    submitName(input.value);
+                }
+            };
+
+            input.onblur = function() {
+                if (input.value) {
+                    rect2.innerHTML = '<span class="final-text">' + input.value + '</span>'; // 이름을 입력하면 텍스트로 변경
+                    submitName(input.value); // 입력 후 이름을 URL로 전달
+                } else {
+                    rect2.innerHTML = ''; // 빈 값일 경우 다시 기본 텍스트로 변경
+                }
+            };
+            rect2.innerHTML = ''; // 기존 텍스트 지우기
+            rect2.appendChild(input); // 입력 필드 추가
+            input.focus(); // 자동으로 입력 필드에 포커스
+        }
+        
+        function submitName(name) {
+            if (name) {
+                // 이름을 입력하면 다음 페이지로 이동하면서 이름을 URL에 전달
                 window.location.href = "info.html?name=" + encodeURIComponent(name);  // URL에 이름 전달
             } else {
-                alert("답안지를 작성하기 위해서는 이름을 꼭 적어 주셔야 합니다!");
+                alert("이름을 입력해주세요!");
             }
         }
         </script>
